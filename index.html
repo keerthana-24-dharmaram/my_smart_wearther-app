@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Weather App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<h2>Weather Module</h2>
+<input id="city" placeholder="Enter city">
+<button onclick="getWeather()">Get Weather</button>
+
+<p id="cityName"></p>
+<p id="temp"></p>
+<img id="icon">
+
+<h2>Forecast Module</h2>
+<div id="forecast"></div>
+
+<script>
+const key = "af0e5af514af73bb2acd651524333fa5";
+
+function getWeather(){
+    let c = document.getElementById("city").value;
+
+    // Current Weather
+    fetch("https://api.openweathermap.org/data/2.5/weather?q="+c+"&appid="+key+"&units=metric")
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById("cityName").innerText = d.name;
+        document.getElementById("temp").innerText = d.main.temp + " °C";
+        document.getElementById("icon").src =
+            "https://openweathermap.org/img/wn/" + d.weather[0].icon + ".png";
+    });
+
+    // Forecast (5 values)
+    fetch("https://api.openweathermap.org/data/2.5/forecast?q="+c+"&appid="+key+"&units=metric")
+    .then(r => r.json())
+    .then(d => {
+        let out = "";
+        for(let i=0;i<5;i++){
+            out += d.list[i].main.temp + "°C " +
+                   "<img src='https://openweathermap.org/img/wn/" +
+                   d.list[i].weather[0].icon + ".png'> <br>";
+        }
+        document.getElementById("forecast").innerHTML = out;
+    });
+}
+</script>
+
+</body>
+</html>
